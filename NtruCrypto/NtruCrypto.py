@@ -12,9 +12,8 @@ class PolyObj:
     def init_poly(self):
 
         while(self.coef[self.degree] == 0 and self.degree > 0):
-            self.degree-=1
-        
-
+            self.degree-=1 
+            
     def print(self):
         print(f"PolyObj {self.poly_name}: ", end="")
         for c in self.coef[:-1]:
@@ -206,7 +205,7 @@ class Ntru:
 
     def key_gen(self, g_num):
         
-        coef_f = [1, 1, -1]
+        coef_f = [-1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
         self.params["gx"] = self.encoder(g_num, "gx")
         if not self.key_gen_flag:
             self.params["fx"] = self.poly("fx", coef_f)
