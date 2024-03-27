@@ -125,10 +125,12 @@ class Ntru:
         coef_a = np.array(a.coef)
         coef_b = np.array(b.coef)
         # Perform polynomial multiplication using NumPy's convolution
-        ret_coef = np.convolve(coef_a, coef_b, mode='full') % modulo_size
+        ret_coef = np.convolve(coef_a, coef_b) % modulo_size
         for i in range(self.params["N"], len(ret_coef)):
             ret_coef[i % self.params["N"]] += ret_coef[i]
-        ret_coef = [centered_zero(ret_coef[c], modulo_size) for c in range(NTRU_N)]
+            
+        ret_coef.resize(self.params["N"])
+        ret_coef = np.array([centered_zero(c, modulo_size) for c in ret_coef])
         return PolyObj(name, ret_coef)
 
     def addpoly(self, a, b, modulo_size, name):
@@ -187,11 +189,11 @@ class Ntru:
 
         return ret
     
-    def encoder(self, num, name):
+    def __encoder(self, num, name):
         coef = dec2arr(num)
         return self.poly(name, coef)
 
-    def decoder(self, poly_obj):
+    def __decoder(self, poly_obj):
         return sum([poly_obj.coef[i] * (1 << i) for i in range(self.params["N"])])
 
 
@@ -215,7 +217,7 @@ class Ntru:
         
         coef_f = [-1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
         # coef_f = [1, 1, -1]
-        self.params["gx"] = self.encoder(g_num, "gx")
+        self.params["gx"] = self.__encoder(g_num, "gx")
         if not self.key_gen_flag:
             self.params["fx"] = self.poly("fx", coef_f)
             self.params["ring"] = self.ring("ring")
@@ -236,12 +238,12 @@ class Ntru:
         return 1
 
     def encrypt(self, num, randnum):
-        rx = self.encoder(randnum, "rx")
+        rx = self.__encoder(randnum, "rx")
         ret_poly = self.mulpoly(self.params["Kp"], rx, self.params["q"], "")
         for i in range(self.params["N"]):
             ret_poly.coef[i] *= self.params["p"]
             ret_poly.coef[i] %= self.params["q"]    
-        mx = self.encoder(num, "m")
+        mx = self.__encoder(num, "m")
         ret_poly = self.addpoly(ret_poly, mx, self.params["q"], "cx")
         
         for i in range(self.params["N"]):
@@ -253,4 +255,4 @@ class Ntru:
         cx = self.poly("cx", cx_coef)
         ax = self.mulpoly(cx, self.params["fx"], self.params["q"], "ax")
         ret = self.mulpoly(self.params["Fp"], ax, self.params["p"], "mx")
-        return self.decoder(ret)
+        return self.__decoder(ret)

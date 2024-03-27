@@ -19,6 +19,34 @@ if __name__ == "__main__":
     times1 = []
 
     
+    # for r in range(1 << NTRU_N):
+
+    #     start_time = 0
+    #     used_time = 0
+    #     count = 0
+
+    #     for i in range(1 << NTRU_N):
+            
+    #         cx = nt1.encrypt(i, 121)
+    #         start_time = time.time_ns()
+    #         mx = nt1.decrypt(cx)
+    #         end_time = time.time_ns()
+    #         if mx != i:
+    #             err += 1
+            
+    #         count+=1
+    #         c = nt1.poly("", cx)
+    #         # print(f"m:{i:4d} | cx:{c} | decrypt:{mx:4d}, r:{r} | errs:{err:7d}")
+    #         used_time += (end_time - start_time)
+
+    #     times1.append((used_time / count / 1000))
+
+    #     print(f"Ntru De average spent {(used_time) / count/ 1000:20f} us | r:{r} | errors:{err}")
+    #     # print(f"Ntru En and De average spent {(end_time - start_time) / count:20f} us")
+
+
+
+
     for r in range(1 << NTRU_N):
 
         start_time = 0
@@ -26,39 +54,11 @@ if __name__ == "__main__":
         count = 0
 
         for i in range(1 << NTRU_N):
-            
-            cx = nt1.encrypt(i, 121)
             start_time = time.time_ns()
-            mx = nt1.decrypt(cx)
-            end_time = time.time_ns()
-            if mx != i:
-                err += 1
-            
-            count+=1
-            c = nt1.poly("", cx)
-            # print(f"m:{i:4d} | cx:{c} | decrypt:{mx:4d}, r:{r} | errs:{err:7d}")
-            used_time += (end_time - start_time)
-
-        times1.append((used_time / count / 1000))
-
-        print(f"Ntru De average spent {(used_time) / count/ 1000:20f} us | r:{r} | errors:{err}")
-        # print(f"Ntru En and De average spent {(end_time - start_time) / count:20f} us")
-
-
-
-
-    for r in range(1 << NTRU_N):
-
-        start_time = 0
-        used_time = 0
-        count = 0
-
-        for i in range(1 << NTRU_N):
-            
             cx = nt.encrypt(i, 121)
-            start_time = time.time_ns()
-            mx = nt.decrypt(cx)
             end_time = time.time_ns()
+            mx = nt.decrypt(cx)
+            
             if mx != i:
                 err += 1
             

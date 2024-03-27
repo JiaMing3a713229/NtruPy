@@ -1,0 +1,5 @@
+{
+    "sketch": "sketch.ino",
+    "output": "build",
+    "port": "/dev/ttyUSB0"
+}
